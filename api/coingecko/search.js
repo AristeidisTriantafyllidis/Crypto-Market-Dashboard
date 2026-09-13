@@ -9,11 +9,17 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: "server_misconfigured" });
   }
 
+  const query = (req.query.query || "").trim();
+  if (!query) {
+    return res.status(200).json([]);
+  }
+
   let upstream;
   try {
-    upstream = await fetch(`${COINGECKO_BASE}/coins/list`, {
-      headers: { "x-cg-demo-api-key": process.env.COINGECKO_API_KEY },
-    });
+    upstream = await fetch(
+      `${COINGECKO_BASE}/search?query=${encodeURIComponent(query)}`,
+      { headers: { "x-cg-demo-api-key": process.env.COINGECKO_API_KEY } },
+    );
   } catch (err) {
     return res.status(502).json({ error: "upstream_unreachable" });
   }
@@ -25,5 +31,5 @@ module.exports = async function handler(req, res) {
       status: upstream.status,
     });
   }
-  return res.status(upstream.status).json(body);
+  return res.status(200).json(body.coins || []);
 };

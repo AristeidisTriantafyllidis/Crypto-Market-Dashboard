@@ -42,8 +42,8 @@ export async function fetchDataForCHart(id, days, signal) {
   return response.json();
 }
 
-export async function fetchEveryCoin(signal) {
-  const url = "/api/coingecko/coins-list";
+export async function fetchSearchedCoins(query, signal) {
+  const url = `/api/coingecko/search?query=${encodeURIComponent(query)}`;
   const response = await fetch(url, { method: "GET", signal });
   if (!response.ok) {
     const error = new Error(`Response status ${response.status}`);

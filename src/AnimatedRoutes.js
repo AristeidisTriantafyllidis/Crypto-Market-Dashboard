@@ -91,6 +91,7 @@ export default function AnimatedRoutes({
   backgroundColor,
   setBackgroundColor,
   filteredCryptos,
+  searchLoading,
 }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -122,12 +123,29 @@ export default function AnimatedRoutes({
             onClick={() => handleSearchResultClick(crypto)}
             onKeyDown={(e) => handleResultKeyDown(e, crypto)}
           >
-            {crypto.name}
+            <div className="flex items-center gap-3">
+              <img
+                className="h-6 w-6 rounded-full"
+                src={crypto.thumb}
+                alt="Crypto thumb"
+              />
+              <span>{crypto.name}</span>
+              {crypto.symbol && (
+                <span className="text-sm font-normal uppercase text-slate-500 dark:text-slate-400">
+                  {crypto.symbol}
+                </span>
+              )}
+              {crypto.market_cap_rank && (
+                <span className="ml-auto text-sm font-normal text-slate-400 dark:text-slate-500">
+                  #{crypto.market_cap_rank}
+                </span>
+              )}
+            </div>
           </div>
         ))
       ) : (
         <div className="px-6 py-10 text-center text-slate-400 dark:text-slate-500">
-          No crypto found
+          {searchLoading ? "Searching…" : "No crypto found"}
         </div>
       );
   }

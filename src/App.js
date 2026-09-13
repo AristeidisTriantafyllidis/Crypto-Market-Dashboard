@@ -4,7 +4,7 @@ import {
   fetchTrendingCryptos,
   fetchSpecificCrypto,
   fetchDataForCHart,
-  fetchEveryCoin,
+  fetchSearchedCoins,
 } from "./servises/api";
 import { useState, useEffect, useCallback } from "react";
 import { BrowserRouter } from "react-router-dom";
@@ -29,7 +29,7 @@ function App() {
   const [backgroundColor, setBackgroundColor] = useState(() => {
     return localStorage.getItem("backgroundColor") || "white";
   });
-  const [allCoins, setAllCoins] = useState(null);
+  const [searchedCoins, setSearchedCoins] = useState(null);
   const [watchlistData, setWatchlistData] = useState(() => {
     const savedWatchlist = localStorage.getItem("cryptoWatchlist");
     if (!savedWatchlist) return [];
@@ -44,6 +44,7 @@ function App() {
   const [detailError, setDetailError] = useState(null);
   const [chartError, setChartError] = useState(null);
   const [searchCrypto, setSearchCrypto] = useState("");
+  const [searchLoading, setSearchLoading] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -51,16 +52,14 @@ function App() {
 
     async function getData() {
       try {
-        const [coins, trending, allCoins] = await Promise.all([
+        const [coins, trending] = await Promise.all([
           fetchData(controller.signal),
           fetchTrendingCryptos(controller.signal),
-          fetchEveryCoin(controller.signal),
         ]);
 
         if (cancelled) return;
         setCoins(coins);
         setTrendingCoins(trending);
-        setAllCoins(allCoins);
       } catch (error) {
         if (error.name === "AbortError" || cancelled) return;
         setError(() => {
@@ -222,6 +221,48 @@ function App() {
   }, [id, daysForChart]);
 
   useEffect(() => {
+    if (!searchCrypto.trim()) {
+      setSearchedCoins(null);
+      setSearchLoading(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    let cancelled = false;
+    let debounceTimeoutId;
+
+    setSearchLoading(true);
+
+    const fetchCoins = async () => {
+      try {
+        const result = await fetchSearchedCoins(
+          searchCrypto,
+          controller.signal,
+        );
+        if (!cancelled) {
+          setSearchedCoins(result);
+        }
+      } catch (error) {
+        if (error.name !== "AbortError" && !cancelled) {
+          console.error("Search error:", error);
+        }
+      } finally {
+        if (!cancelled) {
+          setSearchLoading(false);
+        }
+      }
+    };
+
+    debounceTimeoutId = setTimeout(fetchCoins, 300);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(debounceTimeoutId);
+      controller.abort();
+    };
+  }, [searchCrypto]);
+
+  useEffect(() => {
     localStorage.setItem("backgroundColor", backgroundColor);
     document.documentElement.classList.toggle(
       "dark",
@@ -237,9 +278,7 @@ function App() {
     SetId(id);
   }, []);
 
-  const filteredCryptos = (allCoins || []).filter((crypto) =>
-    crypto.name.toLowerCase().startsWith(searchCrypto.toLowerCase()),
-  );
+  const filteredCryptos = searchedCoins || [];
 
   const handleAddtoWatchlist = (crypto) => {
     for (const item of watchlistData) {
@@ -275,6 +314,7 @@ function App() {
           backgroundColor={backgroundColor}
           setBackgroundColor={setBackgroundColor}
           filteredCryptos={filteredCryptos}
+          searchLoading={searchLoading}
         />
       </BrowserRouter>
     </div>
