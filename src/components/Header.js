@@ -16,7 +16,7 @@ export default function Header({
         type="button"
         className="flex flex-shrink-0 items-center gap-2 rounded-md text-base font-bold text-slate-900 transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:text-slate-100"
         onClick={() => navigate("/")}
-        aria-label="Coin Pulse home"
+        aria-label="CoinPulse home"
       >
         <img
           className="h-9 w-9 rounded-md object-contain"
@@ -25,7 +25,7 @@ export default function Header({
           width={200}
           height={100}
         />
-        <span className="hidden sm:inline">Coin Pulse</span>
+        <span className="hidden sm:inline">CoinPulse</span>
       </button>
 
       <div className="relative order-3 w-full flex-1 sm:order-none sm:w-auto sm:max-w-[420px]">
@@ -60,7 +60,7 @@ export default function Header({
         <button
           type="button"
           className="inline-flex h-10 items-center justify-center whitespace-nowrap rounded-full border border-transparent px-4 text-sm font-semibold transition-colors hover:border-slate-200 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:hover:border-slate-700 dark:hover:bg-slate-800"
-          onClick={() => navigate("/Watchlist")}
+          onClick={() => navigate("/watchlist")}
           aria-label="Go to watchlist"
           title="Watchlist"
         >

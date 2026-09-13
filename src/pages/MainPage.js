@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { LineGraph } from "../chrart/Chart";
+import { LineGraph } from "../components/Chart";
 import { useNavigate } from "react-router-dom";
 
 export default function MainPage(props) {
@@ -20,7 +20,7 @@ export default function MainPage(props) {
   const handleClick = (crypto) => {
     const id = crypto.id || crypto.coin_id || crypto.item?.id;
     props.findId(id);
-    navigate(`/DetailPage/${id}`);
+    navigate(`/coins/${id}`);
   };
   const formatPrice = (price) => {
     return (price = new Intl.NumberFormat("en-us", {

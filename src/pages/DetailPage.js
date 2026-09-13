@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { LineGraphForDetailPage } from "../chrart/Chart";
+import { LineGraphForDetailPage } from "../components/Chart";
 
 export default function DetailPage(props) {
   const [coin, setCoin] = useState(null);

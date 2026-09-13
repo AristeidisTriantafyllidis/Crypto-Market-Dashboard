@@ -3,9 +3,9 @@ import {
   fetchData,
   fetchTrendingCryptos,
   fetchSpecificCrypto,
-  fetchDataForCHart,
+  fetchDataForChart,
   fetchSearchedCoins,
-} from "./servises/api";
+} from "./services/api";
 import { useState, useEffect, useCallback } from "react";
 import { BrowserRouter } from "react-router-dom";
 import AnimatedRoutes from "./AnimatedRoutes";
@@ -23,7 +23,7 @@ function App() {
   const [, setError] = useState();
   const [trendingCoins, setTrendingCoins] = useState(null);
   const [specificCoin, setSpecificCoin] = useState(null);
-  const [id, SetId] = useState(null);
+  const [id, setId] = useState(null);
   const [chartData, setChartData] = useState(null);
   const [daysForChart, setDaysForChart] = useState(1);
   const [backgroundColor, setBackgroundColor] = useState(() => {
@@ -164,7 +164,7 @@ function App() {
         setChartError(null);
 
         try {
-          const result = await fetchDataForCHart(
+          const result = await fetchDataForChart(
             id,
             daysForChart,
             controller.signal,
@@ -275,7 +275,7 @@ function App() {
   }, [watchlistData]);
 
   const findId = useCallback((id) => {
-    SetId(id);
+    setId(id);
   }, []);
 
   const filteredCryptos = searchedCoins || [];

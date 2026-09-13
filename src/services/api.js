@@ -2,7 +2,7 @@ export async function fetchData(signal) {
   const response = await fetch("/api/coingecko/markets", { signal });
 
   if (!response.ok) {
-    const error = new Error(`Response status : ${response.status}`);
+    const error = new Error(`Response status: ${response.status}`);
     error.status = response.status;
     throw error;
   }
@@ -13,7 +13,7 @@ export async function fetchTrendingCryptos(signal) {
   const url = "/api/coingecko/trending";
   const response = await fetch(url, { method: "GET", signal });
   if (!response.ok) {
-    const error = new Error(`Response Status : ${response.status} `);
+    const error = new Error(`Response status: ${response.status}`);
     error.status = response.status;
     throw error;
   }
@@ -24,18 +24,18 @@ export async function fetchSpecificCrypto(id, signal) {
   const url = `/api/coingecko/coin/${id}`;
   const response = await fetch(url, { method: "GET", signal });
   if (!response.ok) {
-    const error = new Error(`Response Status : ${response.status}`);
+    const error = new Error(`Response status: ${response.status}`);
     error.status = response.status;
     throw error;
   }
   return response.json();
 }
 
-export async function fetchDataForCHart(id, days, signal) {
+export async function fetchDataForChart(id, days, signal) {
   const url = `/api/coingecko/chart/${id}?days=${days}`;
   const response = await fetch(url, { method: "GET", signal });
   if (!response.ok) {
-    const error = new Error(`Resonse stastus ${response.status}`);
+    const error = new Error(`Response status: ${response.status}`);
     error.status = response.status;
     throw error;
   }
@@ -46,7 +46,7 @@ export async function fetchSearchedCoins(query, signal) {
   const url = `/api/coingecko/search?query=${encodeURIComponent(query)}`;
   const response = await fetch(url, { method: "GET", signal });
   if (!response.ok) {
-    const error = new Error(`Response status ${response.status}`);
+    const error = new Error(`Response status: ${response.status}`);
     error.status = response.status;
     throw error;
   }

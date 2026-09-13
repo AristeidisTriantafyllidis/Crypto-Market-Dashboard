@@ -1,14 +1,14 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import MainPage from "./appPages/MainPage";
-import ErrorBoundary from "./errorhandling/ErrorBoundary";
-import DetailPage from "./appPages/DetailPage";
-import Watchlist from "./appPages/Watchlist";
-import SkeletonPlaceholder from "./pages/skeletons/SkeletonMain";
-import DetailSkeletonPlaceholder from "./pages/skeletons/SkeletonDetail";
+import MainPage from "./pages/MainPage";
+import ErrorBoundary from "./components/ErrorBoundary";
+import DetailPage from "./pages/DetailPage";
+import Watchlist from "./pages/Watchlist";
+import SkeletonPlaceholder from "./components/skeletons/SkeletonMain";
+import DetailSkeletonPlaceholder from "./components/skeletons/SkeletonDetail";
 import App from "./App";
-import * as api from "./servises/api";
+import * as api from "./services/api";
 
 const mockNavigate = jest.fn();
 
@@ -16,10 +16,10 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock("./chrart/Chart", () => ({
+jest.mock("./components/Chart", () => ({
   LineGraph: () => <div>Chart</div>,
 }));
-jest.mock("./chrart/Chart", () => ({
+jest.mock("./components/Chart", () => ({
   LineGraph: () => <div>Chart</div>,
   LineGraphForDetailPage: () => <div>Detail Chart</div>,
 }));
@@ -54,7 +54,7 @@ describe("fetchData", () => {
       status: 500,
     });
 
-    await expect(api.fetchData()).rejects.toThrow("Response status : 500");
+    await expect(api.fetchData()).rejects.toThrow("Response status: 500");
   });
 });
 
@@ -127,7 +127,7 @@ test("navigates to the detail page when a user clicks a cryptocurrency", () => {
 
   userEvent.click(bitcoin);
 
-  expect(mockNavigate).toHaveBeenCalledWith("/DetailPage/bitcoin");
+  expect(mockNavigate).toHaveBeenCalledWith("/coins/bitcoin");
 });
 
 test("adds the coin to the watchlist when the user clicks Add this coin to watchlist", () => {

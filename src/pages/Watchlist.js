@@ -7,7 +7,7 @@ export default function Watchlist(props) {
   const handleClick = (crypto) => {
     const id = crypto.id || crypto.coin_id || crypto.item?.id;
     props.findId(id);
-    navigate(`/DetailPage/${id}`);
+    navigate(`/coins/${id}`);
   };
 
   const deleteCryptoFromWatchlist = (e, cryptoId) => {

@@ -7,12 +7,12 @@ import {
   useParams,
 } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
-import MainPage from "./appPages/MainPage";
-import DetailPage from "./appPages/DetailPage";
-import Watchlist from "./appPages/Watchlist";
-import Header from "./appPages/Header";
-import SkeletonPlaceholder from "./pages/skeletons/SkeletonMain";
-import DetailSkeletonPlaceholder from "./pages/skeletons/SkeletonDetail";
+import MainPage from "./pages/MainPage";
+import DetailPage from "./pages/DetailPage";
+import Watchlist from "./pages/Watchlist";
+import Header from "./components/Header";
+import SkeletonPlaceholder from "./components/skeletons/SkeletonMain";
+import DetailSkeletonPlaceholder from "./components/skeletons/SkeletonDetail";
 import "react-loading-skeleton/dist/skeleton.css";
 
 export function PageTransition({ children }) {
@@ -100,7 +100,7 @@ export default function AnimatedRoutes({
     const id = crypto.id || crypto.coin_id || crypto.item?.id;
     findId(id);
     setSearchCrypto("");
-    navigate(`/DetailPage/${id}`);
+    navigate(`/coins/${id}`);
   };
 
   const handleResultKeyDown = (e, crypto) => {
@@ -179,7 +179,7 @@ export default function AnimatedRoutes({
               }
             />
             <Route
-              path="/DetailPage/:id"
+              path="/coins/:id"
               element={
                 <DetailRoute
                   findId={findId}
@@ -197,7 +197,7 @@ export default function AnimatedRoutes({
               }
             />
             <Route
-              path="/Watchlist"
+              path="/watchlist"
               element={
                 <PageTransition>
                   <Watchlist
