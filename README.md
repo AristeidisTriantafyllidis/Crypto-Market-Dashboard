@@ -6,7 +6,7 @@ A React web application for tracking live cryptocurrency market data. Browse the
 
 ## ✨ Features
 
-- **Market Overview**: Browse the top cryptocurrencies with live price, market cap, and 24h change.
+- **Market Overview**: Browse the top cryptocurrencies with live price, market cap, and 24h change. Top Coins by Market Cap uses server-side pagination — click Load More to fetch the next 20 coins.
 - **Trending Coins**: See which coins are trending right now.
 - **Deep-Dive Charts**: Click into any coin for detailed stats and interactive price history charts.
 - **Watchlist**: Save coins you care about and remove them just as easily.
