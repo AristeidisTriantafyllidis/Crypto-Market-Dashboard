@@ -1,5 +1,7 @@
-export async function fetchData(signal) {
-  const response = await fetch("/api/coingecko/markets", { signal });
+export async function fetchData(page = 1, signal) {
+  const response = await fetch(`/api/coingecko/markets?page=${page}`, {
+    signal,
+  });
 
   if (!response.ok) {
     const error = new Error(`Response status: ${response.status}`);

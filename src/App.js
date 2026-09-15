@@ -6,11 +6,12 @@ import {
   fetchDataForChart,
   fetchSearchedCoins,
 } from "./services/api";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { BrowserRouter } from "react-router-dom";
 import AnimatedRoutes from "./AnimatedRoutes";
 
 const RETRY_DELAYS_SECONDS = [30, 60, 90];
+const PAGE_SIZE = 20;
 
 function isRateLimitError(error) {
   return error.status === 429;
@@ -19,6 +20,11 @@ function isRateLimitError(error) {
 function App() {
   const [coins, setCoins] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadMoreError, setLoadMoreError] = useState(null);
+  const loadMoreControllerRef = useRef(null);
   const [detailLoading, setDetailLoading] = useState(true);
   const [, setError] = useState();
   const [trendingCoins, setTrendingCoins] = useState(null);
@@ -50,16 +56,39 @@ function App() {
     const controller = new AbortController();
     let cancelled = false;
 
-    async function getData() {
+    async function getTrending() {
       try {
-        const [coins, trending] = await Promise.all([
-          fetchData(controller.signal),
-          fetchTrendingCryptos(controller.signal),
-        ]);
+        const trending = await fetchTrendingCryptos(controller.signal);
+        if (cancelled) return;
+        setTrendingCoins(trending);
+      } catch (error) {
+        if (error.name === "AbortError" || cancelled) return;
+        setError(() => {
+          throw error;
+        });
+      }
+    }
 
+    getTrending();
+
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
+  }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    let cancelled = false;
+
+    async function getCoins() {
+      try {
+        const coins = await fetchData(1, controller.signal);
         if (cancelled) return;
         setCoins(coins);
-        setTrendingCoins(trending);
+        if (coins.length < PAGE_SIZE) {
+          setHasMore(false);
+        }
       } catch (error) {
         if (error.name === "AbortError" || cancelled) return;
         setError(() => {
@@ -72,7 +101,7 @@ function App() {
       }
     }
 
-    getData();
+    getCoins();
 
     return () => {
       cancelled = true;
@@ -278,6 +307,41 @@ function App() {
     setId(id);
   }, []);
 
+  useEffect(() => {
+    return () => {
+      loadMoreControllerRef.current?.abort();
+    };
+  }, []);
+
+  const loadMore = useCallback(async () => {
+    if (loadingMore || !hasMore) return;
+
+    const nextPage = page + 1;
+    const controller = new AbortController();
+    loadMoreControllerRef.current = controller;
+
+    setLoadingMore(true);
+    setLoadMoreError(null);
+
+    try {
+      const nextCoins = await fetchData(nextPage, controller.signal);
+      setCoins((prev) => [...(prev || []), ...nextCoins]);
+      setPage(nextPage);
+      if (nextCoins.length < PAGE_SIZE) {
+        setHasMore(false);
+      }
+    } catch (error) {
+      if (error.name === "AbortError") return;
+      setLoadMoreError(
+        isRateLimitError(error)
+          ? "You've reached CoinGecko's rate limit. Please wait a minute and try again."
+          : "Unable to load more coins.",
+      );
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [loadingMore, hasMore, page]);
+
   const filteredCryptos = searchedCoins || [];
 
   const handleAddtoWatchlist = (crypto) => {
@@ -297,6 +361,10 @@ function App() {
         <AnimatedRoutes
           loading={loading}
           coins={coins}
+          onLoadMore={loadMore}
+          loadingMore={loadingMore}
+          hasMore={hasMore}
+          loadMoreError={loadMoreError}
           trendingCoins={trendingCoins?.coins}
           detailLoading={detailLoading}
           specificCoin={specificCoin}

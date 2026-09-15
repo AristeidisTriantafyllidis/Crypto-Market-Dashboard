@@ -74,6 +74,10 @@ function DetailRoute({
 export default function AnimatedRoutes({
   loading,
   coins,
+  onLoadMore,
+  loadingMore,
+  hasMore,
+  loadMoreError,
   trendingCoins,
   detailLoading,
   specificCoin,
@@ -171,6 +175,10 @@ export default function AnimatedRoutes({
                   ) : (
                     <MainPage
                       coins={coins}
+                      onLoadMore={onLoadMore}
+                      loadingMore={loadingMore}
+                      hasMore={hasMore}
+                      loadMoreError={loadMoreError}
                       trendingCoins={trendingCoins}
                       findId={findId}
                     />

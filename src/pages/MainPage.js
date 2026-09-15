@@ -148,6 +148,27 @@ export default function MainPage(props) {
           <tbody>{topCryptos}</tbody>
         </table>
       </div>
+      {props.loadMoreError && (
+        <p className="mt-4 text-center text-sm text-negative dark:text-negative-dark">
+          {props.loadMoreError}
+        </p>
+      )}
+      {props.hasMore && (
+        <div className="mt-6 flex justify-center">
+          <button
+            type="button"
+            onClick={props.onLoadMore}
+            disabled={props.loadingMore}
+            className="rounded-xl bg-accent px-6 py-3 text-sm font-semibold tracking-wide text-white transition hover:-translate-y-0.5 hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 dark:bg-accent-dark dark:hover:bg-accent-darkhover"
+          >
+            {props.loadingMore
+              ? "Loading…"
+              : props.loadMoreError
+                ? "Try again"
+                : "Load more"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
