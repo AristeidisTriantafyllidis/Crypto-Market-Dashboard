@@ -27,7 +27,9 @@ export function PageTransition({ children }) {
     </motion.main>
   );
 }
-
+function ret() {
+  return;
+}
 function DetailRoute({
   findId,
   detailLoading,
